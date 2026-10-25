@@ -1,73 +1,63 @@
 package com.example.detective_game;
 
-import com.example.detective_game.model.Case;
-import com.example.detective_game.repository.CaseRepository;
+import com.example.detective_game.model.Clue;
+import com.example.detective_game.repository.ClueRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class CaseDataLoader {
+public class ClueDataLoader {
 
-    @Bean
-    CommandLineRunner loadCases(CaseRepository caseRepository) {
-        return args -> {
+```
+@Bean
+CommandLineRunner loadClues(ClueRepository clueRepository) {
+    return args -> {
 
-            if (caseRepository.count() > 0) {
-                return;
-            }
+        if (clueRepository.count() > 0) {
+            System.out.println("Clues already exist. Skipping clue creation.");
+            return;
+        }
 
-            Case case1 = new Case();
+        // CASE 1: The Missing Diamond
+        addClue(clueRepository, 1L,
+                "A small piece of blue fabric was found near the broken display case.");
+        addClue(clueRepository, 1L,
+                "Sarah was wearing a blue jacket that evening.");
+        addClue(clueRepository, 1L,
+                "Security footage showed someone wearing blue near the diamond display.");
 
-            case1.setTitle("The Missing Diamond");
-            case1.setStory(
-                "A priceless diamond disappeared from a locked museum " +
-                "room at 9 PM. The security guard heard glass breaking. " +
-                "Four people were present, but only one is responsible."
-            );
-            case1.setSuspect1("John");
-            case1.setSuspect2("Sarah");
-            case1.setSuspect3("Michael");
-            case1.setSuspect4("Emma");
-            case1.setCorrectAnswer("Sarah");
+        // CASE 2: The Midnight Murder
+        addClue(clueRepository, 2L,
+                "A heated argument took place in the victim's office earlier that evening.");
+        addClue(clueRepository, 2L,
+                "Robert's fingerprints were found on a document beside the victim.");
+        addClue(clueRepository, 2L,
+                "Robert had threatened to confront the businessman about a financial dispute.");
 
-            caseRepository.save(case1);
+        // CASE 3: The Stolen Necklace
+        addClue(clueRepository, 3L,
+                "A witness noticed someone near the jewellery box shortly before it disappeared.");
+        addClue(clueRepository, 3L,
+                "Emily was seen leaving the room where the necklace had been kept.");
+        addClue(clueRepository, 3L,
+                "A loose thread matching Emily's outfit was found beside the empty jewellery box.");
 
+        System.out.println("Nine detective clues added successfully!");
+    };
+}
 
-            Case case2 = new Case();
+private void addClue(
+        ClueRepository clueRepository,
+        Long caseId,
+        String description) {
 
-            case2.setTitle("The Midnight Murder");
-            case2.setStory(
-                "A businessman was found dead in his office at midnight. " +
-                "The detective discovered that the victim had argued " +
-                "with one of four suspects earlier that evening."
-            );
-            case2.setSuspect1("David");
-            case2.setSuspect2("Olivia");
-            case2.setSuspect3("Robert");
-            case2.setSuspect4("Sophia");
-            case2.setCorrectAnswer("Robert");
+    Clue clue = new Clue();
+    clue.setCaseId(caseId);
+    clue.setDescription(description);
 
-            caseRepository.save(case2);
+    clueRepository.save(clue);
+}
+```
 
-
-            Case case3 = new Case();
-
-            case3.setTitle("The Stolen Necklace");
-            case3.setStory(
-                "A valuable necklace vanished during a party. " +
-                "The doors were watched all night, so the thief " +
-                "must have been someone already inside the house."
-            );
-            case3.setSuspect1("Daniel");
-            case3.setSuspect2("Emily");
-            case3.setSuspect3("James");
-            case3.setSuspect4("Isabella");
-            case3.setCorrectAnswer("Emily");
-
-            caseRepository.save(case3);
-
-            System.out.println("Three detective cases added successfully!");
-        };
-    }
 }
