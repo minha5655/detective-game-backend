@@ -9,60 +9,47 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClueDataLoader {
 
-```
-@Bean
-CommandLineRunner loadClues(ClueRepository clueRepository) {
-    return args -> {
+    @Bean
+    CommandLineRunner loadClues(ClueRepository clueRepository) {
+        return args -> {
 
-        addCluesForCase(clueRepository, 1L,
-            "A small piece of blue fabric was found near the diamond display.",
-            "Sarah was wearing a blue jacket that evening.",
-            "Security footage showed someone wearing blue near the display.");
+            if (clueRepository.count() > 0) {
+                System.out.println("Clues already exist. Skipping clue creation.");
+                return;
+            }
 
-        addCluesForCase(clueRepository, 2L,
-            "A heated argument took place in the victim's office.",
-            "Robert's fingerprints were found on a document beside the victim.",
-            "Robert had a financial dispute with the businessman.");
+            // CASE 1: The Missing Diamond
+            addClue(clueRepository, 1L,
+                    "A small piece of blue fabric was found near the broken display case.");
+            addClue(clueRepository, 1L,
+                    "Sarah was wearing a blue jacket that evening.");
+            addClue(clueRepository, 1L,
+                    "Security footage showed someone wearing blue near the diamond display.");
 
-        addCluesForCase(clueRepository, 3L,
-            "A witness noticed someone near the jewellery box.",
-            "Emily was seen leaving the room where the necklace was kept.",
-            "A loose thread matching Emily's outfit was found beside the box.");
+            // CASE 2: The Midnight Murder
+            addClue(clueRepository, 2L,
+                    "A heated argument took place in the victim's office earlier that evening.");
+            addClue(clueRepository, 2L,
+                    "Robert's fingerprints were found on a document beside the victim.");
+            addClue(clueRepository, 2L,
+                    "Robert had threatened to confront the businessman about a financial dispute.");
 
-        System.out.println("Clue loading process completed.");
-    };
-}
+            // CASE 3: The Stolen Necklace
+            addClue(clueRepository, 3L,
+                    "A witness noticed someone near the jewellery box shortly before it disappeared.");
+            addClue(clueRepository, 3L,
+                    "Emily was seen leaving the room where the necklace had been kept.");
+            addClue(clueRepository, 3L,
+                    "A loose thread matching Emily's outfit was found beside the empty jewellery box.");
 
-private void addCluesForCase(
-        ClueRepository repository,
-        Long caseId,
-        String clue1,
-        String clue2,
-        String clue3) {
-
-    if (!repository.findByCaseId(caseId).isEmpty()) {
-        System.out.println("Clues already exist for case " + caseId);
-        return;
+            System.out.println("Nine detective clues added successfully!");
+        };
     }
 
-    saveClue(repository, caseId, clue1);
-    saveClue(repository, caseId, clue2);
-    saveClue(repository, caseId, clue3);
-
-    System.out.println("Added three clues for case " + caseId);
-}
-
-private void saveClue(
-        ClueRepository repository,
-        Long caseId,
-        String description) {
-
-    Clue clue = new Clue();
-    clue.setCaseId(caseId);
-    clue.setDescription(description);
-
-    repository.save(clue);
-}
-```
-
+    private void addClue(ClueRepository clueRepository, Long caseId, String description) {
+        Clue clue = new Clue();
+        clue.setCaseId(caseId);
+        clue.setDescription(description);
+        clueRepository.save(clue);
+    }
 }
