@@ -14,47 +14,46 @@ public class ClueDataLoader {
 CommandLineRunner loadClues(ClueRepository clueRepository) {
     return args -> {
 
-        if (clueRepository.count() > 0) {
-            System.out.println("Clues already exist. Skipping clue creation.");
-            return;
-        }
+        addCluesForCase(clueRepository, 1L,
+            "A small piece of blue fabric was found near the diamond display.",
+            "Sarah was wearing a blue jacket that evening.",
+            "Security footage showed someone wearing blue near the display.");
 
-        // CASE 1: The Missing Diamond
-        addClue(clueRepository, 1L,
-                "Clue 1: A small piece of blue fabric was found near the broken display case.");
+        addCluesForCase(clueRepository, 2L,
+            "A heated argument took place in the victim's office.",
+            "Robert's fingerprints were found on a document beside the victim.",
+            "Robert had a financial dispute with the businessman.");
 
-        addClue(clueRepository, 1L,
-                "Clue 2: Sarah was wearing a blue jacket that evening.");
+        addCluesForCase(clueRepository, 3L,
+            "A witness noticed someone near the jewellery box.",
+            "Emily was seen leaving the room where the necklace was kept.",
+            "A loose thread matching Emily's outfit was found beside the box.");
 
-        addClue(clueRepository, 1L,
-                "Clue 3: Security footage showed someone wearing blue near the diamond display.");
-
-        // CASE 2: The Midnight Murder
-        addClue(clueRepository, 2L,
-                "Clue 1: A heated argument took place in the victim's office earlier that evening.");
-
-        addClue(clueRepository, 2L,
-                "Clue 2: Robert's fingerprints were found on a document beside the victim.");
-
-        addClue(clueRepository, 2L,
-                "Clue 3: Robert had threatened to confront the businessman about a financial dispute.");
-
-        // CASE 3: The Stolen Necklace
-        addClue(clueRepository, 3L,
-                "Clue 1: A witness noticed someone near the jewellery box shortly before it disappeared.");
-
-        addClue(clueRepository, 3L,
-                "Clue 2: Emily was seen leaving the room where the necklace had been kept.");
-
-        addClue(clueRepository, 3L,
-                "Clue 3: A loose thread matching Emily's outfit was found beside the empty jewellery box.");
-
-        System.out.println("Nine detective clues added successfully!");
+        System.out.println("Clue loading process completed.");
     };
 }
 
-private void addClue(
-        ClueRepository clueRepository,
+private void addCluesForCase(
+        ClueRepository repository,
+        Long caseId,
+        String clue1,
+        String clue2,
+        String clue3) {
+
+    if (!repository.findByCaseId(caseId).isEmpty()) {
+        System.out.println("Clues already exist for case " + caseId);
+        return;
+    }
+
+    saveClue(repository, caseId, clue1);
+    saveClue(repository, caseId, clue2);
+    saveClue(repository, caseId, clue3);
+
+    System.out.println("Added three clues for case " + caseId);
+}
+
+private void saveClue(
+        ClueRepository repository,
         Long caseId,
         String description) {
 
@@ -62,7 +61,7 @@ private void addClue(
     clue.setCaseId(caseId);
     clue.setDescription(description);
 
-    clueRepository.save(clue);
+    repository.save(clue);
 }
 ```
 
